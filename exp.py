@@ -31,21 +31,23 @@ win.fill(gray_blue)
 
 # round button function. (Surface, x_pos, y_pos, width, height, border_color, text you want, text_color,
 # button function, background color)
-def round_button(window, x, y, width, height, border_color, text, text_color, command, bg_color=(0, 0, 0, 255)):
+def round_button(window, x, y, width, height, border_color, text, text_color, command, bg_color=(0, 0, 0, 0)):
     mouse_pos = pygame.mouse.get_pos()
 
     # font stuff for text
     font = pygame.font.Font(None, 30)
     words = font.render(text, False, text_color)
 
-    # two rectangles. 1 for the button and 1 for the border
+    # 1 rect. will be used to draw 2 rectangles --> 1 for border/one for fill if bg color provided
     button_rect = pygame.Rect((x, y, width, height))
-    border_rect = pygame.Rect(x, y, width, height)
+
+    if bg_color != (0, 0, 0, 0):
+        pygame.draw.rect(window, bg_color, button_rect, 0, 10)
+        pygame.draw.rect(window, border_color, button_rect, 5, 10)
+    else:
+        pygame.draw.rect(window, border_color, button_rect, 5, 10)
 
     w, h = font.size(text)
-
-    pygame.draw.rect(window, bg_color, border_rect, 0, 10)
-    pygame.draw.rect(window, border_color, button_rect, 5, 10)
 
     window.blit(words, (button_rect.centerx - w / 2, button_rect.centery - h / 2))
 
@@ -77,7 +79,7 @@ while True:
             pygame.quit()
             sys.exit()
 
-    round_button(win, 10, 10, 175, 40, white, "Colors", white, happy)
-    round_button(win, 10, 60, 175, 40, white, "White", white, lambda: bg_change(red), red)
+    round_button(win, 10, 10, 175, 40, white, "Colors", white, lambda: bg_change(lemonade))
+    round_button(win, 10, 60, 175, 40, white, "Red", white, lambda: bg_change(red))
 
     pygame.display.update()
