@@ -1,3 +1,4 @@
+# bg color issue
 # to do: the hover thing for button, list parameter in the dropdown (general not specifically for the thing) + dropdown, clock,
 import pygame
 from pygame import QUIT
@@ -78,6 +79,6 @@ while True:
             pygame.quit()
             sys.exit()
 
-    round_button(win, 10, 10, 175, 40, white, "Change Color", midnight_blue, bg_change_in_order)
+    round_button(win, 10, 10, 175, 40, white, "Change Color", white, bg_change_in_order, midnight_blue)
 
     pygame.display.update()
