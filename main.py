@@ -1,4 +1,4 @@
-#red button not showing up
+# to do: the hover thing for button, list parameter in the dropdown (general not specifically for the thing) + dropdown, clock,
 import pygame
 from pygame import QUIT
 import sys
@@ -7,71 +7,70 @@ import sys
 
 pygame.init()
 
-win = pygame.display.set_mode((1000, 1000))
+win = pygame.display.set_mode((1000, 1000), pygame.SRCALPHA)
 pygame.display.set_caption("Time to get a clock")
 
-white = (255, 255, 255)
-gray_blue = (106, 129, 166)
-navy_blue = (38, 66, 110)
-midnight_purple = (37, 29, 112)
-wisteria = (135, 107, 219)
-flowers = (219, 107, 189)
-red = (255, 59, 75)
-lava = (245, 67, 22)
-lemonade = (240, 222, 144)
-olive = (121, 138, 83)
-sea_glass = (143, 227, 182)
+white = (255, 255, 255, 255)
+gray_blue = (106, 129, 166, 255)
+navy_blue = (38, 66, 110, 255)
+midnight_purple = (37, 29, 112, 255)
+midnight_blue = (2, 15, 36, 255)
+wisteria = (135, 107, 219, 255)
+flowers = (219, 107, 189, 255)
+red = (255, 59, 75, 255)
+lava = (245, 67, 22, 255)
+lemonade = (240, 222, 144, 255)
+olive = (121, 138, 83, 255)
+sea_glass = (143, 227, 182, 255)
 
 colors = [white, gray_blue, navy_blue, midnight_purple, wisteria, flowers, red, lava, lemonade, olive, sea_glass]
+i = 0 #for iterating through colors
 
 # the default ig
 win.fill(gray_blue)
 
 
-# round_button function (x position, y position, width, height, border color, text, text_color, what function to do
-# when clicked, bg color)
-def round_button(x, y, width, height, border_color, text, text_color, command, bg_color=(0, 0, 0, 0)):
+# round button function. (Surface, x_pos, y_pos, width, height, border_color, text you want, text_color,
+# button function, background color)
+def round_button(window, x, y, width, height, border_color, text, text_color, command, bg_color=(0, 0, 0, 0)):
     mouse_pos = pygame.mouse.get_pos()
 
     # font stuff for text
     font = pygame.font.Font(None, 30)
     words = font.render(text, False, text_color)
 
-    # sets a surface for the button along with a rectangle for the button. surface is there in case you want a bg color
-    button_surface = pygame.Surface((width + 10, height + 10), pygame.SRCALPHA)
+    # 1 rect. will be used to draw 2 rectangles --> 1 for border/one for fill if bg color provided
     button_rect = pygame.Rect((x, y, width, height))
-    border_rect = pygame.Rect(x, y, width, height)
 
-    # get the dimensions of the width/height used by the text
+    #if a bg color was provided then do both the border rect and the button rect. but if not, just teh border rectangle
+    if bg_color != (0, 0, 0, 0):
+        pygame.draw.rect(window, bg_color, button_rect, 0, 10)
+        pygame.draw.rect(window, border_color, button_rect, 3, 10)
+    else:
+        pygame.draw.rect(window, border_color, button_rect, 3, 10)
+
     w, h = font.size(text)
 
-    pygame.draw.rect(button_surface, bg_color, border_rect, 0, 10)
-    pygame.draw.rect(button_surface, border_color, button_rect, 5, 10)
-    button_surface.blit(words, (button_rect.centerx - w / 2, button_rect.centery - h / 2))
+    #words in the center of rect
+    window.blit(words, (button_rect.centerx - w / 2, button_rect.centery - h / 2))
 
+    #if its clicked it should perform some function that is given as an argument
     if event.type == pygame.MOUSEBUTTONDOWN:
         if x + 10 <= mouse_pos[0] <= width + x + 10 and y + 10 <= mouse_pos[1] <= height + y + 10:
             command()
             pygame.display.update()
 
-    return button_surface
 
-
-def bg_change(color):
+#change to desired color. not in actual program.
+def manual_bg_change(color):
     win.fill(color)
 
-
-"""
-def color_drop():
-    round_button(10,50,175, 40, white, "White", white, lambda: bg_change(white))
-"""
-
-
-def happy():
-    win.fill(navy_blue)
+def bg_change_in_order():
+    global i
+    win.fill(colors[i])
+    i = (i+1) % len(colors)
 
 
-dropdown = pygame.Rect((10, 10, 200, 50))
 
 while True:
     for event in pygame.event.get():
@@ -79,10 +78,6 @@ while True:
             pygame.quit()
             sys.exit()
 
-    drop = round_button(10, 10, 175, 40, white, "Colors", white, happy)
-    red1 = round_button(10, 60, 175, 40, white, "White", white, lambda: bg_change(red), red)
-
-    win.blit(drop, (10, 10))
-    win.blit(red1, (10, 50))
+    round_button(win, 10, 10, 175, 40, white, "Change Color", midnight_blue, bg_change_in_order)
 
     pygame.display.update()
