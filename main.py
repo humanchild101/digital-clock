@@ -58,7 +58,7 @@ while True:
 
     button = Button(win, 10, 10, 175, 40, white, "Change Color", white, bg_change_in_order, midnight_blue)
     button.draw()
-    button.clicked(event)
+    button.clicked()
 
     time = pygame.time.get_ticks()
     # ok so create a new surface for this. put the datetime.time thing on it and update it every 1000 ms (so every second).. easy enough i hope its actually this simple.
