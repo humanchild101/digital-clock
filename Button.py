@@ -1,5 +1,5 @@
 import pygame
-
+from pygame import *
 pygame.init()
 
 
@@ -36,7 +36,7 @@ class Button:
         # words in the center of rect
         self.window.blit(words, (button_rect.centerx - w / 2, button_rect.centery - h / 2))
 
-    def clicked(self, event):
+    def clicked(self):
         mouse_pos = pygame.mouse.get_pos()
         # if its clicked it should perform some function that is given as an argument
         if event.type == pygame.MOUSEBUTTONDOWN:
