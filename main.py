@@ -1,4 +1,3 @@
-# bg color issue
 # to do: the hover thing for button, list parameter in the dropdown (general not specifically for the thing) + dropdown, clock,
 import pygame
 from pygame import QUIT
@@ -56,9 +55,9 @@ while True:
             pygame.quit()
             sys.exit()
 
-    button = Button(win, 10, 10, 175, 40, white, "Change Color", white, bg_change_in_order, midnight_blue)
-    button.draw()
-    button.clicked()
+        button = Button(win, 10, 10, 175, 40, white, "Change Color", white, bg_change_in_order, midnight_blue)
+        button.draw()
+        button.clicked(event)
 
     time = pygame.time.get_ticks()
     # ok so create a new surface for this. put the datetime.time thing on it and update it every 1000 ms (so every second).. easy enough i hope its actually this simple.
