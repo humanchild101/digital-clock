@@ -1,7 +1,7 @@
 import pygame
 pygame.init()
 class Button:
-    def __init__(self, window, x, y, width, height, border_color, text, text_color, command, bg_color=(0, 0, 0, 0)):
+    def __init__(self, window, x, y, width, height, border_color, text, text_color, command = None, bg_color=(0, 0, 0, 0)):
         self.window = window
         self.x = x
         self.y = y
@@ -27,12 +27,18 @@ class Button:
         w, h = font.size(self.text)
         # words in the center of rect
         self.window.blit(words, (button_rect.centerx - w / 2, button_rect.centery - h / 2))
+
     def clicked(self, event):
         mouse_pos = pygame.mouse.get_pos()
         # if its clicked it should perform some function that is given as an argument
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.x + 10 <= mouse_pos[0] <= self.width + self.x + 10 and self.y + 10 <= mouse_pos[1] <= self.height + self.y + 10:
-                self.command()
+                if self.command != None:
+                    self.command()
+                else:
+                    return True
+
+
     def change_color(self, fill_color=(255, 255, 255), border=(0, 0, 0), text=(0, 0, 0)):
         self.bg_color = fill_color
         self.border_color = border
