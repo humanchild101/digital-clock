@@ -3,15 +3,18 @@
 import pygame
 from pygame import QUIT
 import sys
-
-# import time
+import datetime
+import pytz #timezone
+from Button import *
 
 pygame.init()
 
 win = pygame.display.set_mode((1000, 1000), pygame.SRCALPHA)
 pygame.display.set_caption("Time to get a clock")
+bg_surf = pygame.Surface((1000,1000))
 
-white = (255, 255, 255, 255)
+
+white = (240, 240, 240, 255)
 gray_blue = (106, 129, 166, 255)
 navy_blue = (38, 66, 110, 255)
 midnight_purple = (37, 29, 112, 255)
@@ -25,60 +28,89 @@ olive = (121, 138, 83, 255)
 sea_glass = (143, 227, 182, 255)
 
 colors = [white, gray_blue, navy_blue, midnight_purple, wisteria, flowers, red, lava, lemonade, olive, sea_glass]
-i = 0 #for iterating through colors
+i = 2  # for iterating through colors
+
+
 
 # the default ig
-win.fill(gray_blue)
+bg_surf.fill(navy_blue)
 
+curtz = None  # Tracks selected timezone (None for default)
 
 # round button function. (Surface, x_pos, y_pos, width, height, border_color, text you want, text_color,
 # button function, background color)
-def round_button(window, x, y, width, height, border_color, text, text_color, command, bg_color=(0, 0, 0, 0)):
-    mouse_pos = pygame.mouse.get_pos()
-
-    # font stuff for text
-    font = pygame.font.Font(None, 30)
-    words = font.render(text, False, text_color)
-
-    # 1 rect. will be used to draw 2 rectangles --> 1 for border/one for fill if bg color provided
-    button_rect = pygame.Rect((x, y, width, height))
-
-    #if a bg color was provided then do both the border rect and the button rect. but if not, just teh border rectangle
-    if bg_color != (0, 0, 0, 0):
-        pygame.draw.rect(window, bg_color, button_rect, 0, 10)
-        pygame.draw.rect(window, border_color, button_rect, 3, 10)
-    else:
-        pygame.draw.rect(window, border_color, button_rect, 3, 10)
-
-    w, h = font.size(text)
-
-    #words in the center of rect
-    window.blit(words, (button_rect.centerx - w / 2, button_rect.centery - h / 2))
-
-    #if its clicked it should perform some function that is given as an argument
-    if event.type == pygame.MOUSEBUTTONDOWN:
-        if x + 10 <= mouse_pos[0] <= width + x + 10 and y + 10 <= mouse_pos[1] <= height + y + 10:
-            command()
-            pygame.display.update()
 
 
-#change to desired color. not in actual program.
-def manual_bg_change(color):
-    win.fill(color)
+# use list to change colors in order
 
 def bg_change_in_order():
     global i
-    win.fill(colors[i])
-    i = (i+1) % len(colors)
+    bg_surf.fill(colors[i])
+    i = (i + 1) % len(colors)
 
 
 
+# Update timezone
+def default():
+    global curtz
+    curtz = None
+
+def london():
+    global curtz
+    curtz = "Europe/London"
+
+def india():
+    global curtz
+    curtz = "Asia/Kolkata"
+
+# Display time
+def display_time(timezone=None):
+    if timezone:
+        tz = pytz.timezone(timezone)
+        now = datetime.datetime.now(tz)
+    else:
+        now = datetime.datetime.now()
+
+    current_time = now.strftime("%H:%M:%S")
+    font = pygame.font.Font("fontss/Orbitron-VariableFont_wght.ttf", 60)
+    time_text = font.render(current_time, True, white)
+    w, h = font.size(current_time)
+
+    win.blit(time_text, ((500 - w / 2, 500 - h / 2))) # Display time in the center
+
+# Main loop
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
 
-    round_button(win, 10, 10, 175, 40, white, "Change Color", midnight_blue, bg_change_in_order)
+        # Handle button clicks
+        defa = Button(win, 815, 10, 175, 40, white, "Your Time", white, default, midnight_blue)
+        lon = Button(win, 815, 60, 175, 40, white, "London Time", white, london, midnight_blue)
+        ind = Button(win, 815, 110, 175, 40, white, "India Time", white, india, midnight_blue)
 
+        button = Button(win, 10, 10, 175, 40, white, "Change Color", white, bg_change_in_order, midnight_blue)
+
+        defa.clicked(event)
+        lon.clicked(event)
+        ind.clicked(event)
+
+        button.clicked(event)
+
+    # Draw background and buttons
+    win.blit(bg_surf, (0, 0))
+    defa.draw()
+    lon.draw()
+    ind.draw()
+    button.draw()
+
+
+    # Display the correct time
+    if curtz:
+        display_time(curtz)
+    else:
+        display_time()
+
+    # Update display
     pygame.display.update()
